@@ -1,0 +1,27 @@
+{
+  "name": "carry",
+  "version": "1.0.0",
+  "description": "Read your codebase, label everything, extract style, and generate a handoff prompt for any AI.",
+  "type": "module",
+  "bin": {
+    "carry": "./src/cli.js"
+  },
+  "files": [
+    "src/",
+    "pattern-library.json"
+  ],
+  "keywords": [
+    "cli",
+    "codebase",
+    "handoff",
+    "ai",
+    "prompt",
+    "style",
+    "analysis"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.3.0"
+  }
+}

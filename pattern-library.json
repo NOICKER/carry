@@ -1,0 +1,37 @@
+[
+  {
+    "type": "music-streaming",
+    "folderNames": ["tracks", "playlists", "player", "audio", "library", "queue"],
+    "fileNames": ["player.js", "playlist.js", "audioContext.js", "queue.js", "trackList.js", "nowPlaying.js"],
+    "dependencies": ["howler", "tone", "wavesurfer.js", "spotify-web-api-node", "soundcloud", "music-metadata"],
+    "keywords": ["stream", "track", "album", "artist", "playlist", "audio", "song", "playback"]
+  },
+  {
+    "type": "e-commerce",
+    "folderNames": ["cart", "products", "checkout", "orders", "payments", "catalog"],
+    "fileNames": ["cart.js", "product.js", "checkout.js", "order.js", "payment.js", "inventory.js"],
+    "dependencies": ["stripe", "paypal-rest-sdk", "shopify-api-node", "woocommerce-api", "snipcart", "commerce.js"],
+    "keywords": ["cart", "product", "checkout", "order", "payment", "price", "shipping", "inventory", "sku"]
+  },
+  {
+    "type": "saas",
+    "folderNames": ["dashboard", "auth", "billing", "api", "middleware", "services", "users", "settings"],
+    "fileNames": ["dashboard.js", "auth.js", "billing.js", "subscription.js", "middleware.js", "tenant.js"],
+    "dependencies": ["stripe", "jsonwebtoken", "passport", "bcrypt", "nodemailer", "bull", "@prisma/client"],
+    "keywords": ["dashboard", "subscription", "tenant", "billing", "auth", "login", "signup", "user", "role", "plan"]
+  },
+  {
+    "type": "portfolio",
+    "folderNames": ["projects", "about", "contact", "blog", "gallery", "assets", "sections"],
+    "fileNames": ["portfolio.js", "about.js", "contact.js", "hero.js", "projects.js", "gallery.js"],
+    "dependencies": ["gsap", "framer-motion", "three", "aos", "swiper", "react-scroll"],
+    "keywords": ["portfolio", "project", "about", "contact", "hero", "gallery", "resume", "skill"]
+  },
+  {
+    "type": "chat-app",
+    "folderNames": ["messages", "chat", "conversations", "channels", "rooms", "users"],
+    "fileNames": ["chat.js", "message.js", "conversation.js", "socket.js", "room.js", "channel.js"],
+    "dependencies": ["socket.io", "ws", "pusher", "ably", "firebase", "twilio"],
+    "keywords": ["message", "chat", "conversation", "channel", "room", "socket", "realtime", "send", "receive"]
+  }
+]

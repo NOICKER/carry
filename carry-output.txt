@@ -1,0 +1,16 @@
+You are continuing a coding session.
+This is a portfolio project (matched with 2% confidence)
+with 8 files across 1 folders.
+Key dependencies: readline, path, chalk, fs, url, module.
+
+This project uses:
+  Semicolons: yes
+  Naming: camelCase
+  Functions: arrow functions preferred
+  Async: async/await
+  Indentation: spaces
+  Imports: ES modules (import/export)
+
+Previously I was working on: testing the handoff feature
+
+Continue from here.
