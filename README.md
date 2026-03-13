@@ -1,6 +1,7 @@
 # CArrY
 
-> Take your context anywhere. Switch AIs, lose nothing.
+> Every other solution requires you to do the work yourself. 
+CArrY does it automatically — one command, zero manual effort.
 
 ---
 
