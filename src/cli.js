@@ -67,7 +67,11 @@ async function main() {
   }
 
   // ── Step 4: Handoff Prompt ──
-  const handoffPrompt = await assembleHandoff(matchResult, walkerData, styleSummary);
+  const isFull = process.argv.includes('--full');
+  const { prompt: handoffPrompt, coreCount } = await assembleHandoff(matchResult, walkerData, styleSummary, isFull);
+
+  const totalFiles = walkerData.tree.length;
+  console.log(chalk.yellow(`\n  ℹ️  Focused on ${coreCount} core files out of ${totalFiles} total (run with --full for complete context)`));
 
   printSection('📋 HANDOFF PROMPT (copy-paste ready)', `\n${handoffPrompt}\n`, 'cyan', true);
 
