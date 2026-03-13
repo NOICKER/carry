@@ -42,7 +42,7 @@ export async function assembleHandoff(matchResult, walkerData, styleSummary) {
   const prompt = [
     `You are continuing a coding session.`,
     `This is a ${projectType} project (matched with ${confidence}% confidence)`,
-    `with ${fileCount} files across ${folderCount} folders.`,
+    `with ${fileCount} ${fileCount === 1 ? 'file' : 'files'} across ${folderCount} ${folderCount === 1 ? 'folder' : 'folders'}.`,
     `Key dependencies: ${topImports}.`,
     ``,
     `This project uses:`,
