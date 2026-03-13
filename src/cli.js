@@ -12,10 +12,9 @@ async function main() {
   const cwd = process.cwd();
 
   // ── Banner ──
-  console.log();
-  console.log(chalk.bold.magenta('  🧳 CArrY — Codebase Handoff Generator'));
-  console.log(chalk.gray(`  Scanning: ${cwd}`));
-  console.log();
+  console.log(chalk.cyan.bold('  CArrY'))
+  console.log(chalk.gray('  Codebase Handoff Generator · v1.0.0'))
+  console.log('')
 
   // ── Step 1: Walk the project ──
   printLine('⏳ Walking project files...', 'gray');
@@ -24,7 +23,7 @@ async function main() {
   const treeSummary = [
     `  Files found: ${walkerData.tree.length}`,
     `  Folders:     ${new Set(walkerData.folderNames).size}`,
-    `  Extensions:  ${Object.entries(walkerData.extensions).map(([k, v]) => `${k} (${v})`).join(', ')}`,
+    `  Extensions:\n` + Object.entries(walkerData.extensions).map(([k, v]) => `    - ${k}: ${v}`).join('\n'),
     `  Imports:     ${walkerData.imports.filter(Boolean).length} unique modules`,
     `  Symbols:     ${walkerData.symbols.length} exported`,
   ].join('\n');
@@ -54,9 +53,9 @@ async function main() {
       return `  ${m.file}${suggestion}`;
     });
 
-    // Cap at 15 lines to avoid flooding the terminal
-    const display = miscLines.length > 15
-      ? [...miscLines.slice(0, 15), `  ... and ${miscLines.length - 15} more`]
+    // Cap at 5 lines to avoid flooding the terminal
+    const display = miscLines.length > 5
+      ? [...miscLines.slice(0, 5), `  ... and ${miscLines.length - 5} more`]
       : miscLines;
 
     printSection('⚠️  MISCELLANEOUS', display.join('\n'), 'yellow');
@@ -65,7 +64,7 @@ async function main() {
   // ── Step 4: Handoff Prompt ──
   const handoffPrompt = await assembleHandoff(matchResult, walkerData, styleSummary);
 
-  printSection('📋 HANDOFF PROMPT (copy-paste ready)', `\n${handoffPrompt}\n`, 'cyan');
+  printSection('📋 HANDOFF PROMPT (copy-paste ready)', `\n${handoffPrompt}\n`, 'cyan', true);
 
   // ── Save to file ──
   const outputPath = join(cwd, 'carry-output.txt');

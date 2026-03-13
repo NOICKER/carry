@@ -7,14 +7,16 @@ import { writeFileSync, readFileSync } from 'fs';
  * @param {string} body   — section content
  * @param {'green'|'yellow'|'cyan'} colour
  */
-export function printSection(title, body, colour = 'green') {
+export function printSection(title, body, colour = 'green', showBottomDivider = false) {
   const colourFn = chalk[colour] || chalk.white;
-  const divider = colourFn('─'.repeat(50));
+  const divider = chalk.gray('─'.repeat(40));
   console.log();
   console.log(divider);
   console.log(colourFn.bold(`  ${title}`));
-  console.log(divider);
   console.log(colourFn(body));
+  if (showBottomDivider) {
+    console.log(divider);
+  }
 }
 
 /**
