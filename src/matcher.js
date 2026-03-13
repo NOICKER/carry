@@ -7,12 +7,28 @@ const __dirname = dirname(__filename);
 
 /**
  * Load the pattern library from the package root.
+ * Supports both formats:
+ *   OLD: [ { type, folderNames, fileNames, dependencies, keywords } ]
+ *   NEW: { "category": { common_folders, common_files, common_dependencies, keywords } }
+ *
  * @returns {Array<{ type: string, folderNames: string[], fileNames: string[], dependencies: string[], keywords: string[] }>}
  */
 function loadPatterns() {
   const libPath = join(__dirname, '..', 'pattern-library.json');
   const raw = readFileSync(libPath, 'utf-8');
-  return JSON.parse(raw);
+  const data = JSON.parse(raw);
+
+  // Already an array → old format
+  if (Array.isArray(data)) return data;
+
+  // Object → new format, normalise into array
+  return Object.entries(data).map(([type, p]) => ({
+    type,
+    folderNames: p.common_folders || p.folderNames || [],
+    fileNames: p.common_files || p.fileNames || [],
+    dependencies: p.common_dependencies || p.dependencies || [],
+    keywords: p.keywords || [],
+  }));
 }
 
 /**

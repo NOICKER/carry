@@ -1,0 +1,17 @@
+{
+  "music-streaming": ["music streaming app", "spotify clone", "music player react"],
+  "e-commerce": ["ecommerce react", "online store node", "shopping cart app"],
+  "saas": ["saas boilerplate", "saas starter template", "multi tenant app"],
+  "portfolio": ["portfolio website react", "developer portfolio", "personal website nextjs"],
+  "chat-app": ["chat application react", "realtime chat node", "messaging app socket"],
+  "blog": ["blog platform node", "blogging engine react", "markdown blog"],
+  "crm": ["crm application", "customer management system", "crm dashboard react"],
+  "social-media": ["social media app react", "social network node", "instagram clone"],
+  "fitness-tracker": ["fitness tracker app", "workout tracker react", "exercise app"],
+  "recipe-app": ["recipe app react", "cooking app node", "meal planner"],
+  "weather-app": ["weather app react", "weather dashboard", "forecast app"],
+  "task-manager": ["task manager react", "todo app node", "project management app"],
+  "video-streaming": ["video streaming app", "youtube clone react", "video platform node"],
+  "real-estate": ["real estate app react", "property listing node", "house rental app"],
+  "education-platform": ["learning management system", "education platform react", "online course app"]
+}
