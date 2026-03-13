@@ -28,6 +28,10 @@ CArrY will:
 3. **Label everything** — what's recognized gets tagged, what isn't gets flagged as miscellaneous and matched against other project types so you know what it *could* be
 4. **Extract your coding style** — detects your naming conventions, formatting choices, and patterns automatically
 5. **Assemble a handoff prompt** — one clean, copy-paste ready block that gives any AI full context on your project instantly
+6. ## Why not just use `tree` or `grep`?
+Those show you structure. CArrY interprets it and assembles 
+a prompt an AI can actually use. One is a list, the other 
+is a handoff.
 
 ---
 
