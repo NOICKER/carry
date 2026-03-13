@@ -17,7 +17,7 @@ Free AI coding tiers run out. You switch from Claude to ChatGPT to Gemini and ba
 Run one command inside any project folder:
 
 ```bash
-npx carry
+npx carry-handoff
 ```
 
 CArrY will:
