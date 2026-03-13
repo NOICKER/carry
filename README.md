@@ -77,13 +77,13 @@ No API keys. No account. No cost. Just one command.
 No installation needed. Just run:
 
 ```bash
-npx carry
+npx carry-handoff
 ```
 
 Or install globally if you use it often:
 
 ```bash
-npm install -g carry
+npm install -g carry-handoff
 ```
 
 ---
