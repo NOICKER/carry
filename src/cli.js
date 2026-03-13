@@ -12,9 +12,14 @@ async function main() {
   const cwd = process.cwd();
 
   // ── Banner ──
-  console.log(chalk.cyan.bold('  CArrY'))
-  console.log(chalk.gray('  Codebase Handoff Generator · v1.0.0'))
-  console.log('')
+  const asciiBanner = `   ____    _     ____   ____   __  __
+  / ___|  / \\   |  _ \\ |  _ \\ \\ \\/ /
+ | |     / _ \\  | |_) || |_) | \\  / 
+ | |___ / ___ \\ |  _ < |  _ <  /  \\ 
+  \\____/_/   \\_\\|_| \\_\\|_| \\_\\/_/\\_\\`;
+  console.log(chalk.cyan.bold(asciiBanner));
+  console.log(chalk.gray('  Codebase Handoff Generator · v1.0.0'));
+  console.log('');
 
   // ── Step 1: Walk the project ──
   printLine('⏳ Walking project files...', 'gray');
