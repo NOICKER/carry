@@ -20,6 +20,7 @@ export function walkProject(rootDir) {
   const symbols = [];
   const folderNames = [];
   const fileContents = new Map();
+  const fileStats = new Map();
 
   function walk(dir) {
     let entries;
@@ -42,6 +43,9 @@ export function walkProject(rootDir) {
       } else if (entry.isFile()) {
         const relPath = relative(rootDir, fullPath);
         tree.push(relPath);
+
+        const stat = statSync(fullPath);
+        fileStats.set(relPath, stat);
 
         // Count extensions
         const ext = extname(name);
@@ -73,7 +77,7 @@ export function walkProject(rootDir) {
   // Deduplicate imports
   const uniqueImports = [...new Set(imports)];
 
-  return { tree, extensions, imports: uniqueImports, symbols, folderNames, fileContents };
+  return { tree, extensions, imports: uniqueImports, symbols, folderNames, fileContents, fileStats };
 }
 
 /**
