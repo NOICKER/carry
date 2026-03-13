@@ -1,6 +1,6 @@
 {
   "name": "carry-handoff",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Read your codebase, label everything, extract style, and generate a handoff prompt for any AI.",
   "type": "module",
   "bin": {
