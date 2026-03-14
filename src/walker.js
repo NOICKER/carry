@@ -1,10 +1,11 @@
 import { readdirSync, statSync } from 'fs';
 import { join, relative, extname, basename } from 'path';
 import { readFile } from './utils.js';
+import chalk from 'chalk';
 
 /** Folders / files to ignore while walking */
 const IGNORE = new Set([
-  'node_modules', '.git', 'dist', 'build', '.env',
+  'node_modules', '.git', 'dist', '.env',
   'carry-output.txt', '.DS_Store', 'package-lock.json',
 ]);
 
@@ -38,7 +39,7 @@ export function walkProject(rootDir) {
       const fullPath = join(dir, name);
 
       if (entry.isDirectory()) {
-        folderNames.push(name);
+        folderNames.push(relative(rootDir, fullPath));
         walk(fullPath);
       } else if (entry.isFile()) {
         const relPath = relative(rootDir, fullPath);
@@ -73,6 +74,13 @@ export function walkProject(rootDir) {
   }
 
   walk(rootDir);
+
+  // Sanity check
+  if (tree.length === 0) {
+    console.warn(chalk.red('⚠ Warning: unexpected scan result — 0 files detected. Check your project path.'));
+  } else if (folderNames.length === 0 && tree.length > 0) {
+    console.warn(chalk.red('⚠ Warning: unexpected scan result — 0 folders detected. Check your project path.'));
+  }
 
   // Deduplicate imports
   const uniqueImports = [...new Set(imports)];
