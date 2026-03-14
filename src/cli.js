@@ -11,17 +11,20 @@ import { printSection, printLine, saveToFile } from './utils.js';
 async function main() {
   const cwd = process.cwd();
 
-  // ── Banner ──
-  const asciiBanner = `   ____    _     ____   ____   __  __
-  / ___|  / \\   |  _ \\ |  _ \\ \\ \\/ /
- | |     / _ \\  | |_) || |_) | \\  / 
- | |___ / ___ \\ |  _ < |  _ <  /  \\ 
-  \\____/_/   \\_\\|_| \\_\\|_| \\_\\/_/\\_\\`;
+  // -- Banner --
+  const asciiBanner = [
+    '   ____      _      ____   ____   __  __',
+    '  / ___|    / \\    |  _ \\ |  _ \\  \\ \\/ /',
+    ' | |       / _ \\   | |_) | | |_) |  \\  /',
+    ' | |___   / ___ \\  |  _ <  |  _ <   /  \\',
+    '  \\____| /_/   \\_\\ |_| \\_\\ |_| \\_\\ /_/\\_\\',
+  ].join('\n');
   console.log(chalk.cyan.bold(asciiBanner));
   console.log(chalk.gray('  Codebase Handoff Generator · v1.0.0'));
+  console.log(chalk.gray('  ' + '-'.repeat(38)));
   console.log('');
 
-  // ── Step 1: Walk the project ──
+  // -- Step 1: Walk the project --
   printLine('⏳ Walking project files...', 'gray');
   const walkerData = walkProject(cwd);
 
@@ -35,11 +38,11 @@ async function main() {
 
   printSection('📁 FILE SCAN', treeSummary, 'green');
 
-  // ── Step 2: Style Snapshot ──
+  // -- Step 2: Style Snapshot --
   const styleSummary = analyseStyle(walkerData.fileContents);
   printSection('🎨 STYLE SNAPSHOT', styleSummary.split('\n').map(l => `  ${l}`).join('\n'), 'green');
 
-  // ── Step 3: Project Matcher ──
+  // -- Step 3: Project Matcher --
   const matchResult = matchProject(walkerData);
 
   let matchBody = `  Best match: ${matchResult.bestMatch.type} (${matchResult.bestMatch.confidence}% confidence)`;
@@ -66,7 +69,7 @@ async function main() {
     printSection('⚠️  MISCELLANEOUS', display.join('\n'), 'yellow');
   }
 
-  // ── Step 4: Handoff Prompt ──
+  // -- Step 4: Handoff Prompt --
   const isFull = process.argv.includes('--full');
   const { prompt: handoffPrompt, coreCount } = await assembleHandoff(matchResult, walkerData, styleSummary, isFull);
 
@@ -75,7 +78,7 @@ async function main() {
 
   printSection('📋 HANDOFF PROMPT (copy-paste ready)', `\n${handoffPrompt}\n`, 'cyan', true);
 
-  // ── Save to file ──
+  // -- Save to file --
   const outputPath = join(cwd, 'carry-output.txt');
   saveToFile(outputPath, handoffPrompt);
   console.log();

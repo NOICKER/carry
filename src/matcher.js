@@ -128,5 +128,7 @@ export function matchProject(walkerData) {
     }
   }
 
-  return { bestMatch, secondary, miscellaneous };
+  const lowConfidence = bestMatch.confidence < 50;
+
+  return { bestMatch, secondary, miscellaneous, lowConfidence };
 }

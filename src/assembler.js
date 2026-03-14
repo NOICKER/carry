@@ -19,14 +19,32 @@ function ask(question) {
 /**
  * Assemble the final handoff prompt.
  *
- * @param {{ bestMatch: { type: string, confidence: number } }} matchResult
+ * @param {{ bestMatch: { type: string, confidence: number }, lowConfidence: boolean }} matchResult
  * @param {{ tree: string[], folderNames: string[], imports: string[], fileStats: Map<string, import('fs').Stats> }} walkerData
  * @param {string} styleSummary
  * @param {boolean} isFull
  * @returns {Promise<string>} the composed handoff prompt
  */
 export async function assembleHandoff(matchResult, walkerData, styleSummary, isFull) {
+  const { default: chalk } = await import('chalk');
+
   console.log();
+
+  let projectDescription = '';
+
+  if (matchResult.lowConfidence) {
+    const { type, confidence } = matchResult.bestMatch;
+    console.log(chalk.yellow('⚠  We could not confidently identify your project type.'));
+    console.log(chalk.yellow(`   Best guess: ${type} (${confidence}% match) — likely inaccurate.`));
+    console.log(chalk.gray('   -> Tip: describe your project below so the AI gets the right context.'));
+    console.log(chalk.gray('   -> Or run with --full flag for a complete file breakdown.'));
+    console.log();
+    projectDescription = await ask(
+      'Describe your project in one sentence (or press Enter to skip):\n> '
+    );
+    console.log();
+  }
+
   const lastMessage = await ask(
     '📝 What were you last working on? Paste your last message to the AI:\n> '
   );
@@ -42,7 +60,7 @@ export async function assembleHandoff(matchResult, walkerData, styleSummary, isF
   const confidence = matchResult.bestMatch.confidence;
 
   const scores = scoreFiles(walkerData, lastMessage);
-  
+
   let coreFiles = [];
   let supportCount = 0;
   for (const [file, data] of scores.entries()) {
@@ -59,9 +77,13 @@ export async function assembleHandoff(matchResult, walkerData, styleSummary, isF
       `\nPlus ${supportCount} supporting files.`;
   }
 
-  const prompt = [
+  const projectTypeLine = matchResult.lowConfidence
+    ? `Project type: Unclassified (closest match: ${projectType} at ${confidence}% confidence)`
+    : `This is a ${projectType} project (matched with ${confidence}% confidence)`;
+
+  const lines = [
     `You are continuing a coding session.`,
-    `This is a ${projectType} project (matched with ${confidence}% confidence)`,
+    projectTypeLine,
     `with ${fileCount} ${fileCount === 1 ? 'file' : 'files'} across ${folderCount} ${folderCount === 1 ? 'folder' : 'folders'}.`,
     `Key dependencies: ${topImports}.`,
     ``,
@@ -70,10 +92,18 @@ export async function assembleHandoff(matchResult, walkerData, styleSummary, isF
     ``,
     fileFilterText,
     ``,
-    `Previously I was working on: ${lastMessage}`,
-    ``,
-    `Continue from here.`,
-  ].join('\n');
+  ];
+
+  if (projectDescription) {
+    lines.push(`Project description (user-provided): ${projectDescription}`);
+    lines.push(``);
+  }
+
+  lines.push(`Previously I was working on: ${lastMessage}`);
+  lines.push(``);
+  lines.push(`Continue from here.`);
+
+  const prompt = lines.join('\n');
 
   return { prompt, coreCount: coreFiles.length, supportCount };
 }
