@@ -35,6 +35,11 @@ function loadEnv() {
   }
 }
 
+// ── Global Exclusions ──────────────────────────────────────────
+const EXCLUDE_FOLDERS = new Set(['src', 'public', 'assets', 'components', 'pages', 'utils', 'hooks', 'lib', 'styles', 'types', 'tests', '__tests__', 'config']);
+const EXCLUDE_FILES = new Set(['readme.md', '.gitignore', 'package.json', 'package-lock.json', 'index.js', 'index.ts', 'index.html', 'app.js', 'app.ts', 'tsconfig.json', '.eslintrc', '.prettierrc', 'vite.config.ts', 'vite.config.js', 'webpack.config.js']);
+const EXCLUDE_KEYWORDS = new Set(['react', 'javascript', 'typescript', 'nodejs', 'api', 'node', 'js', 'mobile', 'python', 'vue', 'hacktoberfest', 'starter-kit', 'create-react-app', 'expressjs', 'mongodb', 'firebase']);
+
 // ── Helpers ────────────────────────────────────────────────────
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -177,10 +182,19 @@ async function main() {
 
     // Filter by 30% frequency
     const repoCount = allRepos.length;
-    const commonFolders = filterByFrequency(allFolders, repoCount);
-    const commonFiles = filterByFrequency(allFiles, repoCount);
-    const commonDeps = filterByFrequency(allDeps, repoCount);
-    const keywords = [...new Set(allTopics.map((t) => t.toLowerCase()))];
+    const commonFolders = filterByFrequency(allFolders, repoCount)
+      .filter((f) => !EXCLUDE_FOLDERS.has(f.toLowerCase()));
+    const commonFiles = filterByFrequency(allFiles, repoCount)
+      .filter((f) => !EXCLUDE_FILES.has(f.toLowerCase()));
+    const commonDeps = filterByFrequency(allDeps, repoCount)
+      .filter((d) => !EXCLUDE_KEYWORDS.has(d.toLowerCase()));
+    const keywords = [...new Set(allTopics.map((t) => t.toLowerCase()))]
+      .filter((k) => !EXCLUDE_KEYWORDS.has(k));
+
+    const totalUnique = new Set([...commonFolders, ...commonFiles, ...commonDeps, ...keywords]).size;
+    if (totalUnique < 3) {
+      console.warn(`   ⚠️  WARNING: Category "${category}" has only ${totalUnique} unique patterns left. Needs better search terms!`);
+    }
 
     result[category] = {
       common_folders: commonFolders,
