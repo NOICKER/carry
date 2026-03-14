@@ -125,8 +125,8 @@ async function main() {
   const catPath = join(__dirname, 'categories.json');
   const categories = JSON.parse(readFileSync(catPath, 'utf-8'));
 
-  const result = {};
   const categoryNames = Object.keys(categories);
+  const rawCategoryData = {};
 
   console.log(`\n🔍  Scraping ${categoryNames.length} categories...\n`);
 
@@ -180,38 +180,78 @@ async function main() {
       }
     }
 
-    // Filter by 30% frequency
+    // Filter by 30% frequency (no exclusion lists)
     const repoCount = allRepos.length;
-    const commonFolders = filterByFrequency(allFolders, repoCount)
-      .filter((f) => !EXCLUDE_FOLDERS.has(f.toLowerCase()));
-    const commonFiles = filterByFrequency(allFiles, repoCount)
-      .filter((f) => !EXCLUDE_FILES.has(f.toLowerCase()));
-    const commonDeps = filterByFrequency(allDeps, repoCount)
-      .filter((d) => !EXCLUDE_KEYWORDS.has(d.toLowerCase()));
-    const keywords = [...new Set(allTopics.map((t) => t.toLowerCase()))]
-      .filter((k) => !EXCLUDE_KEYWORDS.has(k));
+    const commonFolders = filterByFrequency(allFolders, repoCount);
+    const commonFiles = filterByFrequency(allFiles, repoCount);
+    const commonDeps = filterByFrequency(allDeps, repoCount);
+    const keywords = [...new Set(allTopics.map((t) => t.toLowerCase()))];
 
-    const totalUnique = new Set([...commonFolders, ...commonFiles, ...commonDeps, ...keywords]).size;
-    if (totalUnique < 3) {
-      console.warn(`   ⚠️  WARNING: Category "${category}" has only ${totalUnique} unique patterns left. Needs better search terms!`);
-    }
-
-    result[category] = {
-      common_folders: commonFolders,
-      common_files: commonFiles,
-      common_dependencies: commonDeps,
+    rawCategoryData[category] = {
+      commonFolders,
+      commonFiles,
+      commonDeps,
       keywords,
     };
+  }
 
-    console.log(
-      `   ✅  ${commonFolders.length} folders, ${commonFiles.length} files, ` +
-      `${commonDeps.length} deps, ${keywords.length} keywords\n`
-    );
+  // ── Calculate Specificity Scores ────────────────────────────────
+  console.log(`\n🧮  Calculating specificity scores across categories...`);
+  
+  const frequencyMap = {
+    folders: {},
+    files: {},
+    deps: {},
+    keywords: {}
+  };
+
+  // Count how many categories each item appears in
+  for (const cat of categoryNames) {
+    const data = rawCategoryData[cat];
+    data.commonFolders.forEach(f => frequencyMap.folders[f.toLowerCase()] = (frequencyMap.folders[f.toLowerCase()] || 0) + 1);
+    data.commonFiles.forEach(f => frequencyMap.files[f.toLowerCase()] = (frequencyMap.files[f.toLowerCase()] || 0) + 1);
+    data.commonDeps.forEach(d => frequencyMap.deps[d.toLowerCase()] = (frequencyMap.deps[d.toLowerCase()] || 0) + 1);
+    data.keywords.forEach(k => frequencyMap.keywords[k.toLowerCase()] = (frequencyMap.keywords[k.toLowerCase()] || 0) + 1);
+  }
+
+  // Helper to determine weight
+  // > 8 categories = 0
+  // 4-8 categories = 1
+  // 1-3 categories = 3
+  const getWeight = (count) => {
+    if (count > 8) return 0;
+    if (count >= 4) return 1;
+    return 3;
+  };
+
+  const finalResult = {};
+
+  for (const cat of categoryNames) {
+    const data = rawCategoryData[cat];
+    
+    // Transform arrays into objects with specificity weights
+    const applyWeights = (items, freqTarget) => {
+      const resultObj = {};
+      for (const item of items) {
+        const lowerItem = item.toLowerCase();
+        resultObj[lowerItem] = getWeight(frequencyMap[freqTarget][lowerItem]);
+      }
+      return resultObj;
+    };
+
+    finalResult[cat] = {
+      common_folders: applyWeights(data.commonFolders, 'folders'),
+      common_files: applyWeights(data.commonFiles, 'files'),
+      common_dependencies: applyWeights(data.commonDeps, 'deps'),
+      keywords: applyWeights(data.keywords, 'keywords'),
+    };
+
+    console.log(`   ✅  ${cat}: ${data.commonFolders.length} folders, ${data.commonFiles.length} files, ${data.commonDeps.length} deps, ${data.keywords.length} keywords structured with weights.`);
   }
 
   // Write output
   const outPath = join(__dirname, 'pattern-library.json');
-  writeFileSync(outPath, JSON.stringify(result, null, 2) + '\n', 'utf-8');
+  writeFileSync(outPath, JSON.stringify(finalResult, null, 2) + '\n', 'utf-8');
 
   console.log(`\n🎉  Done! pattern-library.json updated with ${categoryNames.length} categories.`);
   console.log(`📁  Saved to: ${outPath}\n`);
