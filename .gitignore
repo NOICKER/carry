@@ -1,3 +1,6 @@
 node_modules/
 carry-output.txt
 .env
+npm_recovery_codes.txt
+npm_recovery_codes*.txt
+*recovery_codes*
